@@ -71,11 +71,11 @@ returnFnResult(function(text) {
    console.log(f()); // выведет 13
  */
 
-var returnCounter = function(num) {
-    return num + 1
-}
-
-console.log(returnCounter(10));
+var num = 10;
+function returnCounter() {
+  let i = num + 1;
+  for (; num < i; num++) {}
+  return num;};
 
 /*
  Задание 5 *:
@@ -107,13 +107,20 @@ function returnArgumentsArray() {
    console.log(newSum()) выведет 6
  */
 
-function bindFunction(sum) {
-    return sum(10, 20);
+function fn() {
+  return arguments;
 }
 
-console.log(bindFunction(function(a, b) {
-    return a + b;
-}));
+function sum(a,b,c) {
+  return a+b+c;
+}
+
+ function bindFunction(f1, f2) {
+   return function() {
+     return f1(f2.apply(this, arguments));
+   }
+ }
+console.log(bindFunction(fn, sum)(15,30,45))
 
 export {
     returnFirstArgument,
