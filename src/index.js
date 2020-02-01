@@ -32,12 +32,8 @@ function returnFirstArgument(firstArgument) {
    sumWithDefaults(10) вернет 110
  */
 
-function sumWithDefaults(a, b) {
+function sumWithDefaults(a, b = 100) {
     return a + b;
-}
-
-function sumWithOneHundred(a) {
-    return a + 100;
 }
 
 /*
@@ -71,11 +67,15 @@ returnFnResult(function(text) {
    console.log(f()); // выведет 13
  */
 
-var num = 10;
-function returnCounter() {
-  let i = num + 1;
-  for (; num < i; num++) {}
-  return num;};
+function returnCounter(num = 0) {
+    let count = num;
+
+    return function() {
+        return ++count;
+    };
+}
+
+let f = returnCounter();
 
 /*
  Задание 5 *:
@@ -108,19 +108,24 @@ function returnArgumentsArray() {
  */
 
 function fn() {
-  return arguments;
+    return arguments;
 }
 
-function sum(a,b,c) {
-  return a+b+c;
+function sum() {
+    let result = 0;
+    
+    for (let i = 0; i < arguments.length; i++) {
+        result +=arguments[i];
+    }
+    
+    return result;
 }
 
- function bindFunction(f1, f2) {
-   return function() {
-     return f1(f2.apply(this, arguments));
-   }
- }
-console.log(bindFunction(fn, sum)(15,30,45))
+function bindFunction(f1, f2) {
+    return function() {
+        return f1(f2.apply(this, arguments));
+    }
+}
 
 export {
     returnFirstArgument,
