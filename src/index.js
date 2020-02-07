@@ -37,15 +37,16 @@ function map(array, fn) {
  */
 
 function reduce(array, fn, initial) {
+    var i;
+    
     if (initial === undefined) {
+        i = 1;
         initial = array[0];
-        for (let i = 1; i < array.length; i++) {
-            initial = fn(initial, array[i], i, array);
-        }
     } else {
-        for (let i = 0; i < array.length; i++) {
-            initial = fn(initial, array[i], i, array);
-        }
+        i = 0;
+    }
+    for (i; i < array.length; i++) {
+        initial = fn(initial, array[i], i, array);
     }
 
     return initial;
@@ -76,35 +77,21 @@ function upperProps(obj) {
  Напишите аналог встроенного метода slice для работы с массивами
  Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
-function slice(array, from, to) {
+
+function slice(array, from = 0, to = array.length) {
     let newArray = [];
 
-    if (Math.sign(from) === -1 && to === undefined) {
-        from = array.length + from;
-        to = array.length + 1;
-    } else if (Math.sign(from) === -1 && Math.sign(to) === -1) {
-        from = array.length + from;
-        to = array.length + to;
-    } else if (from === undefined && to === undefined) {
-        from = 0;
-        to = array.length + 1;
-    } else if (to === undefined) {
-        to = array.length + 1;
-    } else if (Math.sign(from) === -1 && (Math.sign(to) === 1 || Math.sign(to) === 0)) {
-        from = array.length + from;
-    } else if ((Math.sign(from) === 1 || Math.sign(from) === 0) && Math.sign(to) === -1) {
-        to = array.length + to;
-    } else if (from === undefined && Math.sign(to) === 1) {
-        from = 0;
-    } else if (from === undefined && Math.sign(to) === -1) {
-        from = 0;
+    if (to < 0) {
         to = array.length + to;
     }
-    array.forEach(function(elem, index, arr) {
-        if (index >= from && index < to) {
-            newArray.push(elem);
+    if (from < 0) {
+        from = array.length + from;
+    }
+    for (let i = from; i < to; i++) {
+        if (array[i]) {
+            newArray.push(array[i])
         }
-    })
+    }
 
     return newArray;
 }
@@ -115,6 +102,7 @@ function slice(array, from, to) {
  Функция принимает объект и должна вернуть Proxy для этого объекта
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
+
 function createProxy(obj) {
 }
 
