@@ -155,7 +155,100 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
+
 function collectDOMStat(root) {
+    var result = {
+        tags: {}, 
+        texts: 0, 
+        classes: {}
+    }
+
+    var tagArray = [];
+
+    function getTagNamesArray(root) {
+        for (let element of root.children) {
+            tagArray.push(element.tagName);
+            if (element.children !== undefined) {
+                getTagNamesArray(element);
+            }
+        }
+    }
+
+    getTagNamesArray(root);
+
+    var classNameArray = [];
+    
+    var classNamesString = '';
+    
+    function getClassNameArray(root) {
+
+        for (let element of root.children) {
+            if (element.className !== '') {
+                classNamesString += element.className + ' ';
+                if (element.children !== undefined) {
+                    getClassNameArray(element);
+                }
+            } else {
+                if (element.children !== undefined) {
+                    getClassNameArray(element);
+                }
+            }
+        }
+    }
+
+    getClassNameArray(root);
+
+    classNameArray = classNamesString.split(' ');
+
+    classNameArray.pop();
+
+    function unique(arr) {
+        let array = [];
+
+        for (let str of arr) {
+            if (!array.includes(str)) {
+                array.push(str);
+            }
+        }
+
+        return array;
+    }
+
+    let uniqueTagArray = unique(tagArray);
+
+    let uniqueClassNameArray = unique(classNameArray);
+
+    function getTags(arg) {
+        for (var tag = 0; tag < arg.length; tag++) {
+            result.tags[arg[tag]] = root.getElementsByTagName(arg[tag]).length;
+        }
+    }
+
+    function getTexts(root) {
+        for (let part of root.childNodes) {
+            if (part.nodeType === 3) {
+                result.texts += 1;
+            } else {
+                if (part.childNodes !== undefined) {
+                    getTexts(part);
+                }
+            }
+        }
+    }
+
+    function getClasses(arg) {
+        for (var tag = 0; tag < arg.length; tag++) {
+            result.classes[arg[tag]] = root.getElementsByClassName(arg[tag]).length;
+        }
+    }
+
+    getTexts(root);
+
+    getTags(uniqueTagArray);
+
+    getClasses(uniqueClassNameArray);
+
+    return result;
 }
 
 /*
