@@ -54,15 +54,15 @@ function prepend(what, where) {
 
 function findAllPSiblings(where) {
     var newArray = [];
-
+  
     for (let i = 0; i < where.children.length; i++) {
-        if (where.children[i].nextElementSibling.tagName === 'P') {
+        if (where.children[i].nextElementSibling !== null && where.children[i].nextElementSibling.nodeName === 'P') {
             newArray.push(where.children[i]);
         }
     }
-
+  
     return newArray;
-}
+  }
 
 /*
  Задание 4:
