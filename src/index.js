@@ -75,8 +75,6 @@ function returnCounter(num = 0) {
     };
 }
 
-let f = returnCounter();
-
 /*
  Задание 5 *:
 
@@ -107,24 +105,9 @@ function returnArgumentsArray() {
    console.log(newSum()) выведет 6
  */
 
-function fn() {
-    return arguments;
-}
-
-function sum() {
-    let result = 0;
-    
-    for (let i = 0; i < arguments.length; i++) {
-        result +=arguments[i];
-    }
-    
-    return result;
-}
-
-function bindFunction(f1, f2) {
-    return function() {
-        return f1(f2.apply(this, arguments));
-    }
+function bindFunction(fn, ...args) {
+  
+    return fn.bind(null, ...args);
 }
 
 export {
