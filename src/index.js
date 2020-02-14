@@ -21,6 +21,7 @@ function addListener(eventName, target, fn) {
  Пример:
    removeListener('click', document.querySelector('a'), someHandler) // должна удалить указанный обработчик кликов на указанный элемент
  */
+
 function removeListener(eventName, target, fn) {
     target.removeEventListener(eventName, fn);
 }
@@ -51,6 +52,7 @@ function skipDefault(eventName, target) {
 
 function emulateClick(target) {
     let event = new Event('click');
+
     target.dispatchEvent(event);
 }
 
@@ -65,11 +67,11 @@ function emulateClick(target) {
  */
 
 function delegate(target, fn) {
-    target.onclick = function(event) {
-        if (event.target.tagName === 'BUTTON') {
-            event.target.addEventListener('click', fn)
-        }
-    };  
+    for (let block of target.children) {
+        if (block.tagName == 'BUTTON') {
+            block.addEventListener('click', fn);
+        } 
+    }
 }
 
 /*
@@ -84,10 +86,10 @@ function delegate(target, fn) {
 
 function once(target, fn) {
     target.addEventListener('click', fn);
-    target.addEventListener('click', function(e){
-      target.removeEventListener('click', fn);
+    target.addEventListener('click', function() {
+        target.removeEventListener('click', fn);
     });
- }
+}
 
 export {
     addListener,
