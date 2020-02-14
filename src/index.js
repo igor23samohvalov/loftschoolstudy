@@ -104,6 +104,20 @@ function slice(array, from = 0, to = array.length) {
  */
 
 function createProxy(obj) {
+    obj = new Proxy(obj, {
+        set(target, prop, val) {
+            if (typeof val == 'number') {
+                target[prop] = Math.pow(val, 2);
+
+                return true;
+            } else {
+
+                return false;
+            }
+        }
+    })
+    
+    return obj;
 }
 
 export {
