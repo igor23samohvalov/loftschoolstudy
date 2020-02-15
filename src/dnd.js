@@ -17,6 +17,52 @@
  */
 const homeworkContainer = document.querySelector('#homework-container');
 
+// const button = document.createElement('button');
+
+// homeworkContainer.appendChild(button);
+
+// button.addEventListener('click', function(e) {
+
+//     let randNum = function(num) {
+//         return Math.round(Math.random() * num);
+//     }
+
+//     var div = document.createElement('div');
+
+//     div.style = `height: ${randNum(100)}%; width: ${randNum(100)}%; background-color: rgb(${randNum(255)},${randNum(255)},${randNum(255)}); position: absolute; top: ${randNum(100)}%; left: ${randNum(100)}%`;
+    
+//     document.body.children[0].appendChild(div);
+
+//     div.onmousedown = function(event) {
+//         div.ondragstart = function() {
+
+//             return false;
+//         }
+
+//     div.style.zIndex = 1000;
+
+//     moveAt(event.pageX, event.pageY);
+    
+//     function moveAt(pageX, pageY) {
+//         div.style.left = pageX - div.offsetWidth / 2 + 'px';
+//         div.style.top = pageY - div.offsetHeight / 2 + 'px';
+//     }
+
+//     function onMouseMove(event) {
+//          moveAt(event.pageX, event.pageY);
+//     }
+
+//     document.addEventListener('mousemove', onMouseMove);
+
+//     div.onmouseup = function() {
+//         document.removeEventListener('mousemove', onMouseMove);
+//         div.onmouseup = null;
+//     }
+//   }
+// })
+
+
+
 /*
  Функция должна создавать и возвращать новый div с классом draggable-div и случайными размерами/цветом/позицией
  Функция должна только создавать элемент и задвать ему случайные размер/позицию/цвет
@@ -27,6 +73,15 @@ const homeworkContainer = document.querySelector('#homework-container');
    homeworkContainer.appendChild(newDiv);
  */
 function createDiv() {
+
+  var div = document.createElement('div');
+
+  let randNum = function(num) {
+    return Math.round(Math.random() * num);
+  }
+  div.classList = 'draggable-div';
+  div.style = `height: ${randNum(100)}%; width: ${randNum(100)}%; background-color: rgb(${randNum(255)},${randNum(255)},${randNum(255)}); position: absolute; top: ${randNum(100)}%; left: ${randNum(100)}%`;
+  return div;
 }
 
 /*
@@ -38,7 +93,32 @@ function createDiv() {
    addListeners(newDiv);
  */
 function addListeners(target) {
-}
+    target.onmousedown = function(event) {
+        target.ondragstart = function() {
+
+            return false;
+        }
+        target.style.zIndex = 1000;
+
+        moveAt(event.pageX, event.pageY);
+          
+        function moveAt(pageX, pageY) {
+            target.style.left = pageX - target.offsetWidth / 2 + 'px';
+            target.style.top = pageY - target.offsetHeight / 2 + 'px';
+        }
+
+        function onMouseMove(event) {
+            moveAt(event.pageX, event.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        target.onmouseup = function() {
+            document.removeEventListener('mousemove', onMouseMove);
+            target.onmouseup = null;
+        }
+    }
+  }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
 
