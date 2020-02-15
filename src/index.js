@@ -110,10 +110,9 @@ function createProxy(obj) {
                 target[prop] = Math.pow(val, 2);
 
                 return true;
-            } else {
-
-                return false;
-            }
+            } 
+            
+            return false;           
         }
     })
     
