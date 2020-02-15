@@ -67,11 +67,11 @@ function emulateClick(target) {
  */
 
 function delegate(target, fn) {
-    for (let block of target.children) {
-        if (block.tagName == 'BUTTON') {
-            block.addEventListener('click', fn);
-        } 
-    }
+    target.addEventListener('click', function(e) {
+        if (e.target.tagName == 'BUTTON') {
+            fn();
+        }
+    })
 }
 
 /*
@@ -86,9 +86,13 @@ function delegate(target, fn) {
 
 function once(target, fn) {
     target.addEventListener('click', fn);
-    target.addEventListener('click', function() {
-        target.removeEventListener('click', fn);
-    });
+    let deleteEvent = function() {
+      
+        target.addEventListener('click', function() {
+            target.removeEventListener('click', fn);
+        })
+    }
+    setTimeout(deleteEvent(), 0);
 }
 
 export {
