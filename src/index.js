@@ -85,14 +85,10 @@ function delegate(target, fn) {
  */
 
 function once(target, fn) {
-    target.addEventListener('click', fn);
-    let deleteEvent = function() {
-      
-        target.addEventListener('click', function() {
-            target.removeEventListener('click', fn);
-        })
-    }
-    setTimeout(deleteEvent(), 0);
+    target.addEventListener('click', function() {
+        fn();
+    },
+    { once: true })  
 }
 
 export {
