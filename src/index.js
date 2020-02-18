@@ -10,8 +10,8 @@
  */
 
 function delayPromise(seconds) {
-    return new Promise(function(resolve, reject) {
-      setTimeout(() => resolve(), seconds*1000)
+    return new Promise(function(resolve) {
+        setTimeout(() => resolve(), seconds*1000)
     })
 }
 
@@ -34,9 +34,13 @@ function loadAndSortTowns() {
         let aName = a.name.toLowerCase(),
             bName = b.name.toLowerCase();
 
-            if (aName < bName) return -1;
-            if (aName > bName) return 1;
-            if (aName == bName) return 0;
+        if (aName < bName) {
+            return -1
+        } else if (aName > bName) {
+            return 1
+        } else if (aName == bName) {   
+            return 0
+        }
     }
 
     return fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')

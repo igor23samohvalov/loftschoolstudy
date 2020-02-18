@@ -46,12 +46,16 @@ function createDivForTown(town) {
  */
 function loadTowns() {
     function sortByAlp(a, b) {
-      let aName = a.name.toLowerCase(),
-          bName = b.name.toLowerCase();
+        let aName = a.name.toLowerCase(),
+            bName = b.name.toLowerCase();
 
-          if (aName < bName) return -1;
-          if (aName > bName) return 1;
-          if (aName == bName) return 0;
+        if (aName < bName) {
+            return -1
+        } else if (aName > bName) {
+            return 1
+        } else if (aName == bName) {   
+            return 0
+        }
     }
 
     return fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
@@ -75,10 +79,9 @@ function isMatching(full, chunk) {
     if (full.toLowerCase().includes(chunk.toLowerCase())) {
 
         return true;
-    } else {
-
-        return false
     }
+
+    return false
 }
 
 /* Блок с надписью "Загрузка" */
@@ -90,20 +93,30 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
+loadingBlock.style.display = 'none';
+
 filterInput.addEventListener('keyup', function() {
     // это обработчик нажатия кливиш в текстовом поле
+    loadingBlock.style.display = 'block';
     filterResult.innerHTML = '';
-    loadTowns().then(towns => {
-      for (const town of towns) {
-          if (filterInput.value == '') {
-              filterResult.innerHTML = '';
-          } else if (isMatching(town.name, filterInput.value)) {
-              const townNode = createDivForTown(town);
-              filterResult.appendChild(townNode);
-          }
-      }
-    })
-});
+    filterBlock.style.visibility = 'hidden';
+    loadTowns()
+        .then(setTimeout(function() {
+            filterBlock.style.visibility = 'visible';
+            loadingBlock.style.display = 'none';
+        }, 1000))
+        .then(towns => {
+            for (const town of towns) {
+                if (filterInput.value == '') {
+                    filterResult.innerHTML = '';
+                } else if (isMatching(town.name, filterInput.value)) {
+                    const townNode = createDivForTown(town);
+
+                    filterResult.appendChild(townNode);
+                }
+            }
+        })
+})
 
 export {
     loadTowns,
