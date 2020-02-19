@@ -45,6 +45,11 @@ const listTable = homeworkContainer.querySelector('#list-table tbody');
 
 filterNameInput.addEventListener('keyup', function() {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    if (filterNameInput.value == '') {
+        listTable.innerHTML = '';
+      
+        return loadCookies();
+    } 
     let trs = listTable.getElementsByTagName('tr');
 
     for (let tr of trs) {
@@ -54,10 +59,6 @@ filterNameInput.addEventListener('keyup', function() {
             tr.style.display = 'table-row';
         }
     }
-    if (filterNameInput.value == '') {
-        listTable.innerHTML = '';
-        loadCookies();
-    }
 })
 
 addButton.addEventListener('click', () => {
@@ -65,15 +66,9 @@ addButton.addEventListener('click', () => {
     document.cookie = `${addNameInput.value}=${addValueInput.value}`;
     if (isMatching(filterNameInput.value, addValueInput.value, addValueInput.value) == false && filterNameInput.value != '') {
         removeCookieFromTable(addNameInput.value);
-        addNameInput.value = '';
-        addValueInput.value = '';
     } else if (isMatching(filterNameInput.value, addNameInput.value, addValueInput.value) == false && filterNameInput.value != '') {
-        addNameInput.value = '';
-        addValueInput.value = '';
     } else {
         addCookies(addNameInput.value, addValueInput.value);
-        addNameInput.value = '';
-        addValueInput.value = '';
     }
 })
 
@@ -92,13 +87,16 @@ function loadCookies() {
             
             tr.innerHTML = `<th>${key}</th>
                             <th>${cookies[key]}</th>
-                            <th><a href="#">x</a></th>`;
+                            <th><button class = "delete-button">Удалить</button></th>`;
             listTable.appendChild(tr);
         }
     }
 }
 
-loadCookies();
+window.onload = function() {
+    
+    return loadCookies();
+}
 
 function addCookies(name, value) {
     let trs = listTable.getElementsByTagName('tr');
@@ -113,7 +111,7 @@ function addCookies(name, value) {
 
     tr.innerHTML = `<th>${name}</th>
                     <th>${value}</th>
-                    <th><a href="#">x</a></th>`;
+                    <th><button class = "delete-button">Удалить</button></th>`;
     listTable.appendChild(tr);
 }
 
@@ -136,9 +134,9 @@ function isMatching(chunk, name, value) {
 }
 
 listTable.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (e.target.tagName == 'A') {
-
+   
+    if (e.target.classList.contains('delete-button')) {
+        e.preventDefault();
         e.target.parentElement.parentElement.remove();
         document.cookie = `${e.target.parentElement.parentElement.children[0].textContent}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
     }
