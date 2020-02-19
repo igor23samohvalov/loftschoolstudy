@@ -62,7 +62,7 @@ function findAllPSiblings(where) {
     }
   
     return newArray;
-  }
+}
 
 /*
  Задание 4:
@@ -283,7 +283,40 @@ function collectDOMStat(root) {
      nodes: [div]
    }
  */
+
 function observeChildNodes(where, fn) {
+    let obj = {};
+  
+    var callback = function(mutationsList) {
+  
+        if (mutationsList[0].removedNodes.length != 0) {
+            obj.type = 'remove';
+            obj.nodes = [mutationsList[0].removedNodes[0].tagName];
+            addNodes(mutationsList[0].removedNodes[0]);
+
+            return fn(obj);
+        } 
+        obj.type = 'insert';
+        obj.nodes = [mutationsList[0].addedNodes[0].tagName];
+        addNodes(mutationsList[0].addedNodes[0]);
+
+        return fn(obj);
+    }
+    function addNodes(nodes) {
+        if (nodes.children != undefined) {
+            for (let node of nodes.children) {
+                obj.nodes.push(node.tagName)
+                addNodes(node)
+            }
+        }
+    }
+    let mo = new MutationObserver(callback),
+
+        options = {
+            'childList': true,
+            'subtree': true
+        }
+    mo.observe(where, options);
 }
 
 export {
