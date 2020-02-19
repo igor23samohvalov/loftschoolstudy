@@ -45,20 +45,7 @@ const listTable = homeworkContainer.querySelector('#list-table tbody');
 
 filterNameInput.addEventListener('keyup', function() {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
-    if (filterNameInput.value == '') {
-        listTable.innerHTML = '';
-      
-        return loadCookies();
-    } 
-    let trs = listTable.getElementsByTagName('tr');
-
-    for (let tr of trs) {
-        if (!isMatching(filterNameInput.value, tr.children[0].textContent, tr.children[1].textContent)) {
-            tr.style.display = 'none';
-        } else {
-            tr.style.display = 'table-row';
-        }
-    }
+    loadCookies();
 })
 
 addButton.addEventListener('click', () => {
@@ -81,20 +68,23 @@ function loadCookies() {
         return prev
     }, {})
         
+    listTable.innerHTML = '';
+
     if (document.cookie != '') {
-        for (key in cookies) {
-            let tr = document.createElement('tr');
-            
-            tr.innerHTML = `<th>${key}</th>
-                            <th>${cookies[key]}</th>
-                            <th><button class = "delete-button">Удалить</button></th>`;
-            listTable.appendChild(tr);
+        for (let key in cookies) {
+            if (filterNameInput.value == '') {
+                createTRow(key, cookies[key])         
+            } else if (!isMatching(filterNameInput.value, key, cookies[key])) {
+                console.log('doesnt match')
+            } else if (isMatching(filterNameInput.value, key, cookies[key])) {
+                createTRow(key, cookies[key])
+            } 
         }
     }
 }
 
 window.onload = function() {
-    
+
     return loadCookies();
 }
 
@@ -138,6 +128,20 @@ listTable.addEventListener('click', function(e) {
     if (e.target.classList.contains('delete-button')) {
         e.preventDefault();
         e.target.parentElement.parentElement.remove();
-        document.cookie = `${e.target.parentElement.parentElement.children[0].textContent}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+        removeCookie(e.target.parentElement.parentElement.children[0].textContent);
     }
 })
+
+function removeCookie(key) {
+
+    return document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+}
+
+function createTRow(name, value) {
+    let tr = document.createElement('tr');
+
+    tr.innerHTML = `<th>${name}</th>
+                    <th>${value}</th>
+                    <th><button class = "delete-button">Удалить</button></th>`;
+    listTable.appendChild(tr)
+}
