@@ -285,28 +285,24 @@ function collectDOMStat(root) {
  */
 
 function observeChildNodes(where, fn) {
-    let obj = {};
-    obj.nodes = [];
     var callback = function(mutationsList) {
-  
         for (let mutation of mutationsList) {
             if (mutation.removedNodes.length != 0) {
-                for (let node of mutation.removedNodes) {
-                    obj.type = 'remove';
-                    obj.nodes.push(node);
-                    fn(obj);
-                }
-            } else if (mutation.addedNodes.length != 0){
-                for (let node of mutation.addedNodes) {
-                    obj.type = 'insert';
-                    obj.nodes.push(node);
-                    fn(obj);
-                }
+                fn({
+                    type: 'remove',
+                    nodes: [...mutation.removedNodes]
+                })
+            } 
+            if (mutation.addedNodes.length != 0) {
+                fn({
+                    type: 'insert',
+                    nodes: [...mutation.addedNodes]
+                })
             }
         }
     }
     let mo = new MutationObserver(callback),
-
+    
         options = {
             'childList': true,
             'subtree': true
