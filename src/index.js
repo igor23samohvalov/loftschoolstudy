@@ -286,27 +286,22 @@ function collectDOMStat(root) {
 
 function observeChildNodes(where, fn) {
     let obj = {};
-  
+    obj.nodes = [];
     var callback = function(mutationsList) {
   
-        if (mutationsList[0].removedNodes.length != 0) {
-            obj.type = 'remove';
-            obj.nodes = [mutationsList[0].removedNodes[0].tagName];
-            addNodes(mutationsList[0].removedNodes[0]);
-
-            return fn(obj);
-        } 
-        obj.type = 'insert';
-        obj.nodes = [mutationsList[0].addedNodes[0].tagName];
-        addNodes(mutationsList[0].addedNodes[0]);
-
-        return fn(obj);
-    }
-    function addNodes(nodes) {
-        if (nodes.children != undefined) {
-            for (let node of nodes.children) {
-                obj.nodes.push(node.tagName)
-                addNodes(node)
+        for (let mutation of mutationsList) {
+            if (mutation.removedNodes.length != 0) {
+                for (let node of mutation.removedNodes) {
+                    obj.type = 'remove';
+                    obj.nodes.push(node);
+                    fn(obj);
+                }
+            } else if (mutation.addedNodes.length != 0){
+                for (let node of mutation.addedNodes) {
+                    obj.type = 'insert';
+                    obj.nodes.push(node);
+                    fn(obj);
+                }
             }
         }
     }
