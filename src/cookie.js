@@ -50,10 +50,11 @@ filterNameInput.addEventListener('keyup', function() {
 
 addButton.addEventListener('click', () => {
     // здесь можно обработать нажатие на кнопку "добавить cookie"
+    let text = filterNameInput.value;
+
     document.cookie = `${addNameInput.value}=${addValueInput.value}`;
-    if (isMatching(filterNameInput.value, addValueInput.value, addValueInput.value) == false && filterNameInput.value != '') {
+    if (isMatching(text, addValueInput.value, addValueInput.value) == false && text != '') {
         removeCookieFromTable(addNameInput.value);
-    } else if (isMatching(filterNameInput.value, addNameInput.value, addValueInput.value) == false && filterNameInput.value != '') {
     } else {
         addCookies(addNameInput.value, addValueInput.value);
     }
@@ -74,8 +75,6 @@ function loadCookies() {
         for (let key in cookies) {
             if (filterNameInput.value == '') {
                 createTRow(key, cookies[key])         
-            } else if (!isMatching(filterNameInput.value, key, cookies[key])) {
-                console.log('doesnt match')
             } else if (isMatching(filterNameInput.value, key, cookies[key])) {
                 createTRow(key, cookies[key])
             } 
