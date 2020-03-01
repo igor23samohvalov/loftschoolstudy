@@ -1,0 +1,140 @@
+body {
+    font-family: "Fira Sans";
+    margin: 0;
+}
+a {
+    color: blue;
+    text-decoration: underline;
+}
+#map {
+    width: 100%;
+    height: 100vh;
+}
+.review {
+    position: absolute;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;   
+    max-width: 379px;
+    max-height: 527px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    margin: 0px;
+    padding: 0px;
+}
+.review-balloon {
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;   
+    max-width: 379px;
+    max-height: 527px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    margin: 0px;
+    padding: 0px;
+}
+.review-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 379px;
+    height: 45px;
+    border-radius: 10px 10px 0px 0px;
+    background-color: #ff8663;
+}
+.review-header-icon {
+    width: 30px;
+    text-align: center;
+}
+.review-header-address {
+    font-size: 12px;
+    color: #ffffff;
+    font-family: "Fira Sans";
+    font-weight: 300;
+    width: 317px;
+}
+.review-content {
+    display: flex;
+    flex-direction: column;
+    height: 482px;
+    background-color: #ffffff;
+}
+.review-content-body {
+    height: 151px;
+    width: 350px;
+    align-self: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+.review-container {
+    height: 45px;
+}
+.review-container-name {
+    font-size: 16px;
+    color: #4f4f4f;
+    font-weight: bold;
+}
+.review-container-place, .review-container-time {
+    font-size: 16px;
+    color: #4f4f4f;
+    font-weight: 400;
+}
+.review-container-wishes {
+    font-size: 15px;
+    line-height: 22px;
+    color: #4f4f4f;
+    font-weight: 400;
+}
+#review-content-form {
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 328px;
+}
+.review-content-headline {
+    align-self: flex-start;
+    font-size: 16px;
+    color: #ff8663;
+    font-family: "Fira Sans";
+    font-weight: 500;
+    padding: 0px 0px 0px 10px;
+    margin: 0px;
+}
+.input-text {
+    font-size: 15px;
+    line-height: 22px;
+    font-family: "Fira Sans";
+    font-weight: 300;
+    width: 351px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: #ffffff;
+    border: 1px solid #c4c4c4;
+    padding-left: 10px;
+}
+.input-text-area {
+    font-size: 15px;
+    line-height: 22px;
+    font-family: "Fira Sans";
+    font-weight: 300;
+    width: 351px;
+    height: 129px;
+    border-radius: 16px;
+    background-color: #ffffff;
+    border: 1px solid #c4c4c4;
+    padding-left: 10px;
+}
+#input-button {
+    align-self: flex-end;
+    font-size: 12px;
+    color: #ffffff;
+    font-family: "Fira Sans";
+    font-weight: 300;
+    text-align: center;
+    width: 87px;
+    height: 30px;
+    border-radius: 10px;
+    background-color: #ff8663;
+    margin-right: 10px;
+}
