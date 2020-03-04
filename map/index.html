@@ -8,10 +8,28 @@
     <script src="https://api-maps.yandex.ru/2.1/?apikey=03917744-cd34-4d6f-ac30-c1b6bfd2efb3&lang=ru_RU" type="text/javascript"></script>
 </head>
 <body>
-<div id="map">
+    <div id="map">
 
-</div>
-<script src="app.js"></script>
+    </div>
+    <div class="review">
+        <div class="review-header">
+            <div class="review-header-icon"><i class="fa fa-map-marker" style="color: white; font-size:16px"></i></div>
+            <div class="review-header-address"></div>
+            <i class="fa fa-remove" style="font-size:20px; color: white; font-weight: 10" onclick="return hidePopup()"></i>
+        </div>
+        <div class="review-content">
+            <div class="no-reviews">Отзывов пока нет...</div>
+            <div class="review-content-body"></div>
+            <form id="review-content-form" onsubmit="return false">
+                <p class ="review-content-headline">ВАШ ОТЗЫВ</p>
+                <input type="text" id="name" class="input-text" placeholder="Ваше имя" required>
+                <input type="text" id="place" class="input-text" placeholder="Укажите место" required>
+                <textarea form="review-content-form" id="wishes" class="input-text-area" placeholder="Ваши пожелания" required></textarea>
+                <button type="submit" id="input-button">Добавить</button>
+            </form> 
+        </div>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
 

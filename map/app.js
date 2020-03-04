@@ -1,5 +1,13 @@
 ymaps.ready(init);
+
 var store = JSON.parse(localStorage.getItem('marks')) || [];
+
+let reviewBlock = document.querySelector('.review');
+let addressField = document.querySelector('.review-header-address');
+let name = document.querySelector('#name');
+let place = document.querySelector('#place');
+let wishes = document.querySelector('#wishes');
+let reviewContainer = document.querySelector('.review-content-body');
 
 function init() {
     var myMap = new ymaps.Map('map', {
@@ -14,69 +22,48 @@ function init() {
         clusterOpenBalloonOnClick: true,
         clusterBalloonContentLayout: 'cluster#balloonCarousel',
         clusterBalloonPanelMaxMapArea: 0,
-        clusterBalloonContentLayoutWidth: 200,
-        clusterBalloonContentLayoutHeight: 130,
+        clusterBalloonContentLayoutWidth: 300,
+        clusterBalloonContentLayoutHeight: 200,
         clusterBalloonPagerSize: 5
     });
 
-    store.forEach(mark => {
+    window.addEventListener( 'click', (e) => {
+        if (e.target.classList.contains('link')) {
+            let y = event.clientY;
+
+            let x = event.clientX;
+            document.querySelector('.no-reviews').style.display = 'none';
+            reviewContainer.innerHTML = '';
+            store.forEach((mark) =>{
+                if (mark.address == e.target.textContent) {
+                    revealPopup('flex', y, x, mark);
+                    addReview(mark)
+                }
+            })
+            myMap.balloon.close();
+
+        }
+    })    
+    store.forEach((mark) => {
         let placemark = new ymaps.Placemark(mark.coords, {
             balloonContentHeader: `${mark.place} 
             <br> 
-            <a id="showBall">${mark.address}</a> 
+            <a class="link">${mark.address}</a> 
             <br> 
             ${mark.wishes}`,
             balloonContentFooter: `${mark.time}`
         })
-
         placemark.events.add('click', function(e){
             e.preventDefault();
             let y = event.clientY;
 
             let x = event.clientX;
-
-            if (document.body.contains(document.querySelector('.review'))) {
-                document.querySelector('.review').remove();
-            } else if (document.body.contains(document.querySelector('.review-balloon'))) {
-                document.querySelectorAll('.review-balloon').forEach(function(review) {
-                    review.style = 'display: none';
-                })
-            }
-            let balloonReview = createPopup(mark.address);
-            
-            balloonReview.className = 'review-balloon';
-            loadReviews(mark, balloonReview.querySelector('.review-content-body'));
-            balloonReview.style = 'display: flex';  
-            balloonReview.style.top = `${y}px`;
-            balloonReview.style.left = `${x}px`;
-            balloonReview.querySelector('.fa-remove').addEventListener('click', function(e){
-                e.target.parentElement.parentElement.style = 'display: none';
-            })
-            document.body.appendChild(balloonReview);
-
-            balloonReview.querySelector('#input-button').addEventListener('click', function(e){
-                e.preventDefault();
-                mark.time = getTime();
-                mark.place = balloonReview.querySelector('#place').value;
-                mark.name = balloonReview.querySelector('#name').value;
-                mark.wishes = balloonReview.querySelector('#wishes').value;
-
-                let placemark = new ymaps.Placemark(mark.coords, {
-                    balloonContentHeader: `${mark.place} 
-                                          <br> 
-                                          <a id="showBall">${mark.address}</a> 
-                                          <br> 
-                                          ${mark.wishes}`,
-                    balloonContentFooter: `${mark.time}`
-                })
-                store.push(mark);
-                localStorage.setItem('marks', JSON.stringify(store))
-
-                clusterer.add(placemark);
-                myMap.geoObjects.add(clusterer); 
-
-                addReview(balloonReview, balloonReview.querySelector('.review-content-body'));
-                clearFields(balloonReview);
+            reviewContainer.innerHTML = '';
+            revealPopup('flex', y, x, mark);
+            store.forEach((piece) => {
+                if (piece.coords == mark.coords) {
+                    addReview(piece);
+                }
             })
         })
         clusterer.add(placemark);
@@ -85,176 +72,87 @@ function init() {
 
     myMap.events.add('click', function (e) {
         const mark = {};
-
         mark.coords = e.get('coords');
 
         let y = event.clientY;
 
         let x = event.clientX;
 
-        if (document.body.contains(document.querySelector('.review'))) {
-            document.querySelector('.review').remove();
-        } else if (document.body.contains(document.querySelector('.review-balloon'))) {
-          document.querySelectorAll('.review-balloon').forEach(function(review) {
-              review.style = 'display: none';
-          })
-        }
         ymaps.geocode(mark.coords).then(function(res) {
             return res.geoObjects.get(0).getAddressLine();
         })
         .then(function(address){
             mark.address = address;
             
-            
-            let popup = createPopup(address);
-            
-            document.body.appendChild(popup);
-
-            popup.style.top = `${y}px`
-            popup.style.left = `${x}px`
-
-            popup.querySelector('.fa-remove').addEventListener('click', function(e){
-              e.target.parentElement.parentElement.remove();
-            })
-
-            popup.querySelector('#input-button').addEventListener('click', function(e){
-                e.preventDefault();
-                mark.time = getTime();
-                mark.place = popup.querySelector('#place').value;
-                mark.name = popup.querySelector('#name').value;
-                mark.wishes = popup.querySelector('#wishes').value;
-
-                let placemark = new ymaps.Placemark(mark.coords, {
-                    balloonContentHeader: `${mark.place} 
-                                          <br> 
-                                          <a id="showBall">${mark.address}</a> 
-                                          <br> 
-                                          ${mark.wishes}`,
-                    balloonContentFooter: `${mark.time}`
-                })
-
-                store.push(mark);
-                localStorage.setItem('marks', JSON.stringify(store))
-
-                clusterer.add(placemark);
-                myMap.geoObjects.add(clusterer); 
-
-                let balloonReview = createPopup(address);
-                balloonReview.className = 'review-balloon';
-                document.body.appendChild(balloonReview);
-                addReview(popup, popup.querySelector('.review-content-body'));
-                addReview(popup, balloonReview.querySelector('.review-content-body'));
-                clearFields(popup);
-                balloonReview.querySelector('.fa-remove').addEventListener('click', function(e){
-                    e.target.parentElement.parentElement.style = 'display: none';
-                })
-
-                balloonReview.querySelector('#input-button').addEventListener('click', function(e){
-                    e.preventDefault();
-                    mark.time = getTime();
-                    mark.place = popup.querySelector('#place').value;
-                    mark.name = popup.querySelector('#name').value;
-                    mark.wishes = popup.querySelector('#wishes').value;
-
-                    let placemark = new ymaps.Placemark(mark.coords, {
-                        balloonContentHeader: `${mark.place} 
-                                              <br> 
-                                              <a id="showBall">${mark.address}</a> 
-                                              <br> 
-                                              ${mark.wishes}`,
-                        balloonContentFooter: `${mark.time}`
-                    })
-                    store.push(mark);
-                    localStorage.setItem('marks', JSON.stringify(store))
-
-                    clusterer.add(placemark);
-                    myMap.geoObjects.add(clusterer); 
-
-                    addReview(balloonReview, balloonReview.querySelector('.review-content-body'));
-                    clearFields(balloonReview);
-                })
-                placemark.events.add('click', function(e){
-                    e.preventDefault();
-                    
-                    if (document.body.contains(document.querySelector('.review'))) {
-                        document.querySelector('.review').remove();
-                    } else if (document.body.contains(document.querySelector('.review-balloon'))) {
-                        document.querySelectorAll('.review-balloon').forEach(function(review) {
-                          review.style = 'display: none';
-                        })
-                    }
-
-                    balloonReview.style = 'display: flex';  
-                    balloonReview.style.top = `${y}px`;
-                    balloonReview.style.left = `${x}px`;
-                    
-                })
-            })
+            reviewContainer.innerHTML = '';
+            document.querySelector('.no-reviews').style.display = 'block';
+            revealPopup('flex', y, x, mark);
         }) 
     })
 
-}
+    function revealPopup(show, y, x, mark) {
+        
+        addressField.textContent = mark.address;
+        reviewBlock.style.display = show;
 
-function createPopup(address) {
-    let div = document.createElement('div');
+        if ((x + 379) > window.innerWidth) {
+            x = window.innerWidth - 379;
+        } else if ((y + 527) > window.innerHeight) {
+            y = window.innerHeight - 527;
+        } 
+
+        reviewBlock.style.top = `${y}px`;
+        reviewBlock.style.left = `${x}px`;
+        
+        document.querySelector('#input-button').onclick = function(e) {
+            e.preventDefault();
+            if (place.value != '' && wishes.value != '' && name.value != '') {
+                mark.time = getTime();
+                mark.place = place.value;
+                mark.name = name.value;
+                mark.wishes = wishes.value;
+            
+                let placemark = new ymaps.Placemark(mark.coords, {
+                    balloonContentHeader: `${mark.place} 
+                                        <br> 
+                                        <a class="link">${mark.address}</a> 
+                                        <br> 
+                                        ${mark.wishes}`,
+                    balloonContentFooter: `${mark.time}`
+                })
+                store.push(mark);
+                localStorage.setItem('marks', JSON.stringify(store))
+                
+                clusterer.add(placemark);
+                myMap.geoObjects.add(clusterer);
+                document.querySelector('.no-reviews').style.display = 'none';
+                addReview(mark);
+                clearFields(reviewBlock);
     
-    div.classList.add('review');
-    div.innerHTML = 
-        `<div class="review-header">
-            <div class="review-header-icon"><i class="fa fa-map-marker" style="color: white; font-size:16px"></i></div>
-            <div class="review-header-address">${address}</div>
-            <i class="fa fa-remove" style="font-size:20px; color: white; font-weight: 10"></i>
-        </div>
-        <div class="review-content">
-            <div class="review-content-body"></div>
-            <form id="review-content-form" onsubmit="return false">
-                <p class ="review-content-headline">ВАШ ОТЗЫВ</p>
-                <input type="text" id="name" class="input-text" placeholder="Ваше имя">
-                <input type="text" id="place" class="input-text" placeholder="Укажите место">
-                <textarea form="review-content-form" id="wishes" class="input-text-area" placeholder="Ваши пожелания"></textarea>
-                <button type="submit" id="input-button">Добавить</button>
-            </form> 
-        </div>`
-    return div;
-}
-
-function addReview(balloon, reviewField) {
-    let time = getTime();
-
-    let name = balloon.querySelector('#name').value;
-
-    let place = balloon.querySelector('#place').value;
-
-    let wishes = balloon.querySelector('#wishes').value;
-
-    let div = document.createElement('div');
-
-    div.classList.add('review-container');
-    div.innerHTML = 
-        `<span class="review-container-name">${name}</span>
-        <span class="review-container-place">${place}</span>
-        <span class="review-container-time">${time}</span>
-        <br>
-        <span class="review-container-wishes">${wishes}</span>`
+                placemark.events.add('click', function(e){
+                    e.preventDefault();
+                    reviewContainer.innerHTML = '';
+                    revealPopup('flex', y, x, mark);
+                    store.forEach((piece) => {
+                        if (piece.coords == mark.coords) {
+                            addReview(piece);
+                        }
+                    })
+                })
+            } 
     
-    return reviewField.appendChild(div)
+        };
+    } 
+
 }
 
-function loadReviews(mark, reviewField) {
-    let div = document.createElement('div');
-    div.classList.add('review-container');
-    div.innerHTML = 
-        `<span class="review-container-name">${mark.name}</span>
+function addReview(mark) {
+    reviewContainer.innerHTML += 
+        `<div class = "review-container"><span class="review-container-name">${mark.name}</span>
         <span class="review-container-place">${mark.place}</span>
         <span class="review-container-time">${mark.time}</span>
         <br>
-        <span class="review-container-wishes">${mark.wishes}</span>`
-    
-    return reviewField.appendChild(div)
-}
-
-function insertReviews(div, review) {
-    return div.appendChild(review)
+        <span class="review-container-wishes">${mark.wishes}</span></div>`;
 }
 
 function getTime() {
@@ -262,9 +160,13 @@ function getTime() {
     return `${data.getFullYear()}.${data.getMonth() + 1}.${data.getDate()}`
 }
 
-function clearFields(balloon) {
-    balloon.querySelector('#name').value = '';
-    balloon.querySelector('#place').value = '';
-    balloon.querySelector('#wishes').value = '';
+function clearFields() {
+    name.value = '';
+    place.value = '';
+    wishes.value = '';
+}
+
+function hidePopup() {
+    reviewBlock.style.display = 'none';
 }
 

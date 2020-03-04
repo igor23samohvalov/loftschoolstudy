@@ -13,7 +13,7 @@ a {
 .review {
     position: absolute;
     z-index: 1000;
-    display: flex;
+    display: none;
     flex-direction: column;   
     max-width: 379px;
     max-height: 527px;
@@ -60,6 +60,11 @@ a {
     height: 482px;
     background-color: #ffffff;
 }
+
+.no-reviews {
+    padding-left: 10px;
+}
+
 .review-content-body {
     height: 151px;
     width: 350px;
